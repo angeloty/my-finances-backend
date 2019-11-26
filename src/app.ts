@@ -5,8 +5,10 @@ import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import { TestModule } from './modules/test/test.module';
 import { Environment } from './_core/_base/environment';
+import { FinancesModule } from './modules/finances/finances.module';
+import CommonModule from './modules/common/common.module';
 const appEnvironment = new Environment({
-  modules: [TestModule, UserModule],
+  modules: [CommonModule, FinancesModule, UserModule],
   environment: process.env.NODE_ENV,
   middleware: [
     express.urlencoded.bind(express, { extended: false }),

@@ -1,0 +1,1 @@
+{"version":3,"file":"security.context.js","sourceRoot":"","sources":["../../../../src/_core/_base/_security/security.context.ts"],"names":[],"mappings":";;AAAA,+DAAiE;AACpD,QAAA,eAAe,GAAG;IAC7B,SAAS,EAAE,0BAAa;IACxB,GAAG,YAAC,IAAgC;QAClC,IAAI,CAAC,SAAS,GAAG,IAAI,CAAC,SAAS,CAAC;IAClC,CAAC;CACF,CAAC;AAEF,kBAAe,uBAAe,CAAC"}

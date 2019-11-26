@@ -33,8 +33,13 @@ class App {
     modules: (new () => M)[];
     middleware?: (() => RequestHandlerParams<ParamsDictionary>)[];
   }): Promise<App> => {
-    this.initializeMiddleware(config.middleware);
-    return await this.initializeModules(config.modules);
+    try {
+      this.initializeMiddleware(config.middleware);
+      return await this.initializeModules(config.modules);
+    } catch (e) {
+      console.log('Error', e);
+      throw e;
+    }
   }
 
   public getServer = (): express.Application => {

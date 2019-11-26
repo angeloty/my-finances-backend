@@ -2,7 +2,8 @@ import {
   DeleteResult,
   Repository,
   Connection,
-  DeepPartial
+  DeepPartial,
+  ObjectID
 } from 'typeorm';
 import { BaseUserModel } from '../../../_auth/_models/user.model';
 import * as bcrypt from 'bcrypt';
@@ -19,7 +20,7 @@ export class UserProvider {
   public static async find<U extends BaseUserModel>(
     connection: Connection,
     modelClass: new () => U,
-    id: string
+    id: string | ObjectID
   ): Promise<U> {
     try {
       const repository = connection.getRepository(modelClass);
@@ -56,7 +57,7 @@ export class UserProvider {
   public static async update<U extends BaseUserModel>(
     connection: Connection,
     modelClass: new () => U,
-    id: string,
+    id: string | ObjectID,
     data: { [key: string]: any }
   ): Promise<U> {
     try {
@@ -79,7 +80,7 @@ export class UserProvider {
   public static async remove<U extends BaseUserModel>(
     connection: Connection,
     modelClass: new () => U,
-    id: string
+    id: string | ObjectID
   ) {
     try {
       const repository = connection.getRepository(modelClass);

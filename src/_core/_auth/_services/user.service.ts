@@ -1,5 +1,5 @@
 import { UserProvider } from './../../_base/_security/_providers/user.provider';
-import { Connection, Repository } from 'typeorm';
+import { Connection, Repository, ObjectID } from 'typeorm';
 import { Service } from './../../_base/_service/service';
 import { BaseUserModel } from '../_models/user.model';
 import UserNotFoundException from '../../_base/_security/_exceptions/userNotFound.exception';
@@ -7,6 +7,7 @@ import TokenData from '../../_base/_security/_interfaces/tokenData.interface';
 import applicationContext from '../../application.context';
 export class BaseUserService<T extends BaseUserModel> extends Service<T> {
   protected repository: Repository<T>;
+  protected relations: { relations?: string[] } = { relations: [] };
   private modelClass: any;
 
   constructor(modelClass?: new () => T) {
@@ -16,15 +17,20 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
 
   public getAll = async () => {
     try {
-      return await this.getRepository(this.modelClass).find({});
+      const options = Object.assign({}, this.relations);
+      return await this.getRepository(this.modelClass).find(options);
     } catch (e) {
       throw e;
     }
   }
 
-  public findById = async (id: string) => {
+  public findById = async (id: string | ObjectID) => {
     try {
-      const user = await this.getRepository(this.modelClass).findOne(id);
+      const options = Object.assign({}, this.relations);
+      const user = await this.getRepository(this.modelClass).findOne(
+        id,
+        options
+      );
       if (!user) {
         throw new UserNotFoundException();
       }
@@ -43,11 +49,16 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
   }
 
   public update = async (
-    id: string,
+    id: string | ObjectID,
     body: { [P in keyof T]: any }
   ): Promise<T> => {
     try {
-      return await UserProvider.update(this.connection, this.modelClass, id, body);
+      return await UserProvider.update(
+        this.connection,
+        this.modelClass,
+        id,
+        body
+      );
     } catch (e) {
       throw e;
     }
@@ -58,7 +69,12 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
     pass: string
   ): Promise<{ user: T; token: string; cookie: string }> => {
     try {
-      return await UserProvider.login<T>(this.connection, this.modelClass, username, pass);
+      return await UserProvider.login<T>(
+        this.connection,
+        this.modelClass,
+        username,
+        pass
+      );
     } catch (e) {
       throw e;
     }
@@ -72,7 +88,7 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
     return UserProvider.createCookie(tokenData);
   }
 
-  public remove = async (id: string): Promise<boolean> => {
+  public remove = async (id: string | ObjectID): Promise<boolean> => {
     try {
       return await UserProvider.remove(this.connection, this.modelClass, id);
     } catch (e) {

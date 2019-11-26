@@ -92,9 +92,10 @@ export class DBManager {
           database: process.env.DB_NAME,
           synchronize: true,
           logging: false,
+          authSource: 'admin',
           entities: models
               ? models
-              : ['src/models/**/*.ts', 'src/modules/**/models/**/*.ts'],
+              : ['src/models/*.ts', 'src/modules/**/models/*.ts'],
           migrations: [
             'src/migration/**/*.ts',
             'src/modules/**/migration/**/*.ts'

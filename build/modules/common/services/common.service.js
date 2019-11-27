@@ -37,18 +37,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var application_context_1 = require("../../../_core/application.context");
 var PostNotFoundException_1 = require("../../../_core/_exceptions/PostNotFoundException");
-var profile_model_1 = require("../models/profile.model");
-var user_services_1 = require("./user.services");
-var ProfileService = /** @class */ (function () {
-    function ProfileService() {
+var currency_model_1 = require("../models/currency.model");
+var CommonService = /** @class */ (function () {
+    function CommonService() {
         var _this = this;
-        this.find = function (id) { return __awaiter(_this, void 0, void 0, function () {
-            var element, e_1;
+        this.findCurrency = function (id) { return __awaiter(_this, void 0, void 0, function () {
+            var repository, element, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.repository.findOne(id)];
+                        repository = application_context_1.default.connection.getRepository(currency_model_1.CurrencyModel);
+                        return [4 /*yield*/, repository.findOne(id)];
                     case 1:
                         element = _a.sent();
                         if (element) {
@@ -62,13 +62,14 @@ var ProfileService = /** @class */ (function () {
                 }
             });
         }); };
-        this.findAll = function () { return __awaiter(_this, void 0, void 0, function () {
-            var e_2;
+        this.findAllCurrencies = function () { return __awaiter(_this, void 0, void 0, function () {
+            var repository, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.repository.find({})];
+                        repository = application_context_1.default.connection.getRepository(currency_model_1.CurrencyModel);
+                        return [4 /*yield*/, repository.find({})];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
                         e_2 = _a.sent();
@@ -77,50 +78,34 @@ var ProfileService = /** @class */ (function () {
                 }
             });
         }); };
-        this.save = function (profileData, user) { return __awaiter(_this, void 0, void 0, function () {
-            var userModel, profile, e_3;
+        this.createCurrency = function (earn) { return __awaiter(_this, void 0, void 0, function () {
+            var repository, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.userService.findById(user.id)];
-                    case 1:
-                        userModel = _a.sent();
-                        _a.label = 2;
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        repository = application_context_1.default.connection.getRepository(currency_model_1.CurrencyModel);
+                        return [4 /*yield*/, repository.save(repository.merge(new currency_model_1.CurrencyModel(), earn))];
+                    case 1: return [2 /*return*/, _a.sent()];
                     case 2:
-                        _a.trys.push([2, 4, , 5]);
-                        profile = userModel.profile;
-                        if (!profile) {
-                            profile = new profile_model_1.ProfileModel();
-                            profile.user = userModel;
-                        }
-                        if (profileData.birthday) {
-                            if (!(profile.birthday instanceof Date)) {
-                                profileData.birthday = new Date(profileData.birthday);
-                            }
-                        }
-                        profile = this.repository.merge(profile, profileData);
-                        return [4 /*yield*/, profile.save()];
-                    case 3: return [2 /*return*/, _a.sent()];
-                    case 4:
                         e_3 = _a.sent();
-                        if (e_3.code === 9) {
-                            return [2 /*return*/, userModel.profile];
-                        }
                         throw e_3;
-                    case 5: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         }); };
-        this.remove = function (id) { return __awaiter(_this, void 0, void 0, function () {
-            var toUpdate, e_4;
+        this.updateCurrency = function (id, test) { return __awaiter(_this, void 0, void 0, function () {
+            var toUpdate, repository, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.find(id)];
+                        return [4 /*yield*/, this.findCurrency(id)];
                     case 1:
                         toUpdate = _a.sent();
-                        return [4 /*yield*/, this.repository.delete(id)];
-                    case 2: return [2 /*return*/, !!(_a.sent())];
+                        repository = application_context_1.default.connection.getRepository(currency_model_1.CurrencyModel);
+                        return [4 /*yield*/, repository.save(repository.merge(toUpdate, test))];
+                    case 2: return [2 /*return*/, _a.sent()];
                     case 3:
                         e_4 = _a.sent();
                         throw e_4;
@@ -128,10 +113,27 @@ var ProfileService = /** @class */ (function () {
                 }
             });
         }); };
-        this.repository = application_context_1.default.connection.getRepository(profile_model_1.ProfileModel);
-        this.userService = new user_services_1.UserService();
+        this.removeCurrency = function (id) { return __awaiter(_this, void 0, void 0, function () {
+            var toUpdate, repository, e_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.findCurrency(id)];
+                    case 1:
+                        toUpdate = _a.sent();
+                        repository = application_context_1.default.connection.getRepository(currency_model_1.CurrencyModel);
+                        return [4 /*yield*/, repository.delete(id)];
+                    case 2: return [2 /*return*/, !!(_a.sent())];
+                    case 3:
+                        e_5 = _a.sent();
+                        throw e_5;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); };
     }
-    return ProfileService;
+    return CommonService;
 }());
-exports.ProfileService = ProfileService;
-//# sourceMappingURL=profile.service.js.map
+exports.CommonService = CommonService;
+//# sourceMappingURL=common.service.js.map

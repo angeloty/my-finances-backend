@@ -14,34 +14,28 @@ async function roleMiddleware<U extends BaseUserModel>(
   response: Response,
   next: NextFunction
 ) {
-  const cookies = request.cookies;
-  if (cookies && cookies.Authorization) {
-    const secret = process.env.JWT_SECRET;
-    try {
-      const user = request.user;
-      if (user) {
-        let forbidden = true;
-        if (user.roles) {
-          for (const role of user.roles) {
-            if (roles.some((r: ROLE) => r === role)) {
-              forbidden = false;
-              break;
-            }
+  try {
+    const user = request.user;
+    if (user) {
+      let forbidden = true;
+      if (roles) {
+        for (const role of roles) {
+          if (user.role === role) {
+            forbidden = false;
+            break;
           }
         }
-        if (!forbidden) {
-          next();
-        } else {
-          next(new ForbiddenException());
-        }
-      } else {
-        next(new WrongAuthenticationTokenException());
       }
-    } catch (error) {
+      if (!forbidden) {
+        next();
+      } else {
+        next(new ForbiddenException());
+      }
+    } else {
       next(new WrongAuthenticationTokenException());
     }
-  } else {
-    next(new AuthenticationTokenMissingException());
+  } catch (error) {
+    next(new WrongAuthenticationTokenException());
   }
 }
 

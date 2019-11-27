@@ -88,7 +88,7 @@ var DBManager = /** @class */ (function () {
                     _a.trys.push([0, 2, , 3]);
                     opt = !options
                         ? {
-                            name: process.env.DB_ADAPTER,
+                            // name: process.env.DB_ADAPTER,
                             type: process.env.DB_ADAPTER,
                             host: process.env.DB_HOST,
                             port: +process.env.DB_PORT,
@@ -134,7 +134,7 @@ var DBManager = /** @class */ (function () {
                     _a.trys.push([0, 2, , 3]);
                     opt = !options
                         ? {
-                            name: process.env.DB_ADAPTER,
+                            // name: process.env.DB_ADAPTER,
                             type: process.env.DB_ADAPTER,
                             host: process.env.DB_HOST,
                             port: +process.env.DB_PORT,

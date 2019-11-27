@@ -23,27 +23,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
+var roles_enum_1 = require("../../_base/_security/_interfaces/roles.enum");
 var BaseUserModel = /** @class */ (function (_super) {
     __extends(BaseUserModel, _super);
     function BaseUserModel() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.ObjectIdColumn(),
-        __metadata("design:type", typeorm_1.ObjectID)
+        typeorm_1.PrimaryGeneratedColumn(),
+        __metadata("design:type", Number)
     ], BaseUserModel.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column(),
-        typeorm_1.Index({ unique: true }),
+        typeorm_1.Index({ unique: true, expireAfterSeconds: 3600 }),
         __metadata("design:type", String)
     ], BaseUserModel.prototype, "username", void 0);
     __decorate([
         typeorm_1.Column(),
-        typeorm_1.Index({ unique: true }),
+        typeorm_1.Index({ unique: true, expireAfterSeconds: 3600 }),
         __metadata("design:type", String)
     ], BaseUserModel.prototype, "email", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({ select: false }),
         __metadata("design:type", String)
     ], BaseUserModel.prototype, "password", void 0);
     __decorate([
@@ -51,9 +52,13 @@ var BaseUserModel = /** @class */ (function (_super) {
         __metadata("design:type", Boolean)
     ], BaseUserModel.prototype, "active", void 0);
     __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Array)
-    ], BaseUserModel.prototype, "roles", void 0);
+        typeorm_1.Column({
+            type: 'enum',
+            enum: roles_enum_1.ROLE,
+            default: roles_enum_1.ROLE.USER
+        }),
+        __metadata("design:type", String)
+    ], BaseUserModel.prototype, "role", void 0);
     return BaseUserModel;
 }(typeorm_1.BaseEntity));
 exports.BaseUserModel = BaseUserModel;

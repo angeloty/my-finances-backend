@@ -24,14 +24,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var currency_model_1 = require("../../common/models/currency.model");
+var user_model_1 = require("../../user/models/user.model");
 var EntryModel = /** @class */ (function (_super) {
     __extends(EntryModel, _super);
     function EntryModel() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.ObjectIdColumn(),
-        __metadata("design:type", typeorm_1.ObjectID)
+        typeorm_1.PrimaryGeneratedColumn(),
+        __metadata("design:type", Number)
     ], EntryModel.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column(),
@@ -47,7 +48,7 @@ var EntryModel = /** @class */ (function (_super) {
     ], EntryModel.prototype, "amount", void 0);
     __decorate([
         typeorm_1.Column(),
-        typeorm_1.Index({ unique: true }),
+        typeorm_1.Index({ unique: true, expireAfterSeconds: 3600 }),
         __metadata("design:type", String)
     ], EntryModel.prototype, "slug", void 0);
     __decorate([
@@ -55,6 +56,11 @@ var EntryModel = /** @class */ (function (_super) {
         typeorm_1.JoinColumn({ name: 'currency_id', referencedColumnName: 'id' }),
         __metadata("design:type", currency_model_1.CurrencyModel)
     ], EntryModel.prototype, "currency", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return user_model_1.UserModel; }),
+        typeorm_1.JoinColumn({ name: 'owner_id', referencedColumnName: 'id' }),
+        __metadata("design:type", user_model_1.UserModel)
+    ], EntryModel.prototype, "owner", void 0);
     return EntryModel;
 }(typeorm_1.BaseEntity));
 exports.EntryModel = EntryModel;

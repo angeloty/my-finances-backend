@@ -36,50 +36,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var wrongAuthenticationToken_exception_1 = require("../_exceptions/wrongAuthenticationToken.exception");
-var authenticationTokenMissing_exception_1 = require("../_exceptions/authenticationTokenMissing.exception");
 var forbidden_exception_1 = require("../_exceptions/forbidden.exception");
 function roleMiddleware(roles, request, response, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var cookies, secret, user, forbidden, _loop_1, _i, _a, role, state_1;
-        return __generator(this, function (_b) {
-            cookies = request.cookies;
-            if (cookies && cookies.Authorization) {
-                secret = process.env.JWT_SECRET;
-                try {
-                    user = request.user;
-                    if (user) {
-                        forbidden = true;
-                        if (user.roles) {
-                            _loop_1 = function (role) {
-                                if (roles.some(function (r) { return r === role; })) {
-                                    forbidden = false;
-                                    return "break";
-                                }
-                            };
-                            for (_i = 0, _a = user.roles; _i < _a.length; _i++) {
-                                role = _a[_i];
-                                state_1 = _loop_1(role);
-                                if (state_1 === "break")
-                                    break;
+        var user, forbidden, _i, roles_1, role;
+        return __generator(this, function (_a) {
+            try {
+                user = request.user;
+                if (user) {
+                    forbidden = true;
+                    if (roles) {
+                        for (_i = 0, roles_1 = roles; _i < roles_1.length; _i++) {
+                            role = roles_1[_i];
+                            if (user.role === role) {
+                                forbidden = false;
+                                break;
                             }
                         }
-                        if (!forbidden) {
-                            next();
-                        }
-                        else {
-                            next(new forbidden_exception_1.default());
-                        }
+                    }
+                    if (!forbidden) {
+                        next();
                     }
                     else {
-                        next(new wrongAuthenticationToken_exception_1.default());
+                        next(new forbidden_exception_1.default());
                     }
                 }
-                catch (error) {
+                else {
                     next(new wrongAuthenticationToken_exception_1.default());
                 }
             }
-            else {
-                next(new authenticationTokenMissing_exception_1.default());
+            catch (error) {
+                next(new wrongAuthenticationToken_exception_1.default());
             }
             return [2 /*return*/];
         });

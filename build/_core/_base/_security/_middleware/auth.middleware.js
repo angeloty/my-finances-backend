@@ -64,7 +64,7 @@ function authMiddleware(request, response, next) {
                     _a.trys.push([1, 3, , 4]);
                     verificationResponse = jwt.verify(token, secret);
                     id = verificationResponse._id;
-                    connection = typeorm_1.getConnection(process.env.DB_ADAPTER);
+                    connection = typeorm_1.getConnection();
                     return [4 /*yield*/, user_provider_1.UserProvider.find(connection, security_context_1.securityContext.userModel, id)];
                 case 2:
                     user = _a.sent();

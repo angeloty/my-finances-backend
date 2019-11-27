@@ -31,7 +31,9 @@ var UserModel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.OneToOne(function (type) { return profile_model_1.ProfileModel; }, function (profile) { return profile.user; }),
+        typeorm_1.OneToOne(function (type) { return profile_model_1.ProfileModel; }, function (profile) { return profile.user; }, {
+            eager: true
+        }),
         __metadata("design:type", profile_model_1.ProfileModel)
     ], UserModel.prototype, "profile", void 0);
     UserModel = __decorate([

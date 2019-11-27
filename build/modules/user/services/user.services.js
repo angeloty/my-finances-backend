@@ -19,7 +19,7 @@ var UserService = /** @class */ (function (_super) {
     __extends(UserService, _super);
     function UserService() {
         var _this = _super.call(this, user_model_1.UserModel) || this;
-        _this.relations = { relations: ['profile'] };
+        _this.relations = ['profile'];
         return _this;
     }
     return UserService;

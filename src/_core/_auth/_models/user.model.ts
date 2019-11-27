@@ -1,30 +1,28 @@
-import {
-  Column,
-  ObjectIdColumn,
-  ObjectID,
-  BaseEntity,
-  Index,
-} from 'typeorm';
+import { Column, BaseEntity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { ROLE } from '../../_base/_security/_interfaces/roles.enum';
 
 export class BaseUserModel extends BaseEntity {
-  @ObjectIdColumn()
-  public id: ObjectID;
+  @PrimaryGeneratedColumn()
+  public id: number;
 
   @Column()
-  @Index({ unique: true })
+  @Index({ unique: true, expireAfterSeconds: 3600 })
   public username: string;
 
   @Column()
-  @Index({ unique: true })
+  @Index({ unique: true, expireAfterSeconds: 3600 })
   public email: string;
 
-  @Column()
+  @Column({ select: false })
   public password: string;
 
   @Column()
   public active: boolean;
 
-  @Column()
-  public roles: ROLE[];
+  @Column({
+    type: 'enum',
+    enum: ROLE,
+    default: ROLE.USER
+  })
+  public role: ROLE;
 }

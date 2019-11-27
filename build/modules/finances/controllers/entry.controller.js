@@ -58,31 +58,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
-var controller_decorator_1 = require("../../../_core/_base/_controller/_decorators/controller.decorator");
 var controller_1 = require("../../../_core/_base/_controller/controller");
-var profile_service_1 = require("../services/profile.service");
 var route_decorator_1 = require("../../../_core/_base/_controller/_decorators/route.decorator");
-var ProfileController = /** @class */ (function (_super) {
-    __extends(ProfileController, _super);
-    function ProfileController() {
+var EntryController = /** @class */ (function (_super) {
+    __extends(EntryController, _super);
+    function EntryController() {
         var _this = _super.call(this) || this;
-        _this.service = new profile_service_1.ProfileService();
+        _this.service = _this.getService();
         return _this;
     }
-    ProfileController.prototype.some = function (request, response, next) {
+    EntryController.prototype.all = function (request, response, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var element, e_1;
+            var list, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.service.find(request.user.id.toString())];
+                        return [4 /*yield*/, this.service.findAllByUser(request.user)];
                     case 1:
-                        element = _a.sent();
-                        if (element) {
-                            return [2 /*return*/, response.status(200).send(element)];
-                        }
-                        return [2 /*return*/, response.status(404).send()];
+                        list = _a.sent();
+                        return [2 /*return*/, response.status(200).send(list)];
                     case 2:
                         e_1 = _a.sent();
                         return [2 /*return*/, this.handleError(e_1, response)];
@@ -91,39 +86,39 @@ var ProfileController = /** @class */ (function (_super) {
             });
         });
     };
-    ProfileController.prototype.create = function (request, response, next) {
+    EntryController.prototype.some = function (request, response, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var saved, profile, e_2;
+            var element, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.service.save(request.body, request.user)];
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.service.findByUser(request.params.id, request.user)];
                     case 1:
-                        saved = _a.sent();
-                        return [4 /*yield*/, this.service.find(saved.id)];
+                        element = _a.sent();
+                        if (element) {
+                            return [2 /*return*/, response.status(200).send(element)];
+                        }
+                        return [2 /*return*/, response.status(404).send()];
                     case 2:
-                        profile = _a.sent();
-                        return [2 /*return*/, response.status(200).send(saved)];
-                    case 3:
                         e_2 = _a.sent();
                         return [2 /*return*/, this.handleError(e_2, response)];
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    ProfileController.prototype.update = function (request, response, next) {
+    EntryController.prototype.add = function (request, response, next) {
         return __awaiter(this, void 0, void 0, function () {
             var saved, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.service.save(request.body, request.user)];
+                        return [4 /*yield*/, this.service.create(request.body, request.user)];
                     case 1:
                         saved = _a.sent();
-                        return [2 /*return*/, response.status(200).send(saved)];
+                        return [2 /*return*/, response.status(201).send(saved)];
                     case 2:
                         e_3 = _a.sent();
                         return [2 /*return*/, this.handleError(e_3, response)];
@@ -132,24 +127,49 @@ var ProfileController = /** @class */ (function (_super) {
             });
         });
     };
-    ProfileController.prototype.remove = function (request, response, next) {
+    EntryController.prototype.update = function (request, response, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var deleted, e_4;
+            var saved, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.service.remove(request.user.id.toString())];
+                        return [4 /*yield*/, this.service.update(request.params.id, request.body, request.user)];
                     case 1:
-                        deleted = _a.sent();
-                        if (deleted) {
-                            return [2 /*return*/, response.status(204).send()];
-                        }
-                        return [2 /*return*/, response.status(404).send()];
+                        saved = _a.sent();
+                        return [2 /*return*/, response.status(200).send(saved)];
                     case 2:
                         e_4 = _a.sent();
                         return [2 /*return*/, this.handleError(e_4, response)];
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    EntryController.prototype.remove = function (request, response, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var toRemove, deleted, e_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, this.service.findByUser(request.params.id, request.user)];
+                    case 1:
+                        toRemove = _a.sent();
+                        if (!(toRemove && toRemove.owner.id === request.user.id)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.service.remove(request.params.id)];
+                    case 2:
+                        deleted = _a.sent();
+                        if (deleted) {
+                            return [2 /*return*/, response.status(204).send()];
+                        }
+                        return [3 /*break*/, 4];
+                    case 3: return [2 /*return*/, response.status(403).send()];
+                    case 4: return [2 /*return*/, response.status(404).send()];
+                    case 5:
+                        e_5 = _a.sent();
+                        return [2 /*return*/, this.handleError(e_5, response)];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -159,31 +179,33 @@ var ProfileController = /** @class */ (function (_super) {
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], ProfileController.prototype, "some", null);
+    ], EntryController.prototype, "all", null);
+    __decorate([
+        route_decorator_1.Get({ path: ':id', secured: true }),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Function]),
+        __metadata("design:returntype", Promise)
+    ], EntryController.prototype, "some", null);
     __decorate([
         route_decorator_1.Post({ path: '', secured: true }),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], ProfileController.prototype, "create", null);
+    ], EntryController.prototype, "add", null);
     __decorate([
-        route_decorator_1.Put({ path: '', secured: true }),
+        route_decorator_1.Put({ path: ':id', secured: true }),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], ProfileController.prototype, "update", null);
+    ], EntryController.prototype, "update", null);
     __decorate([
-        route_decorator_1.Delete({ path: '', secured: true }),
+        route_decorator_1.Delete({ path: ':id', secured: true }),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Function]),
         __metadata("design:returntype", Promise)
-    ], ProfileController.prototype, "remove", null);
-    ProfileController = __decorate([
-        controller_decorator_1.default({ path: 'profile' }),
-        __metadata("design:paramtypes", [])
-    ], ProfileController);
-    return ProfileController;
+    ], EntryController.prototype, "remove", null);
+    return EntryController;
 }(controller_1.default));
-exports.ProfileController = ProfileController;
-exports.default = ProfileController;
-//# sourceMappingURL=profile.controller.js.map
+exports.EntryController = EntryController;
+exports.default = EntryController;
+//# sourceMappingURL=entry.controller.js.map

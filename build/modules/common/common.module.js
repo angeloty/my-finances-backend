@@ -15,11 +15,12 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var module_1 = require("../../_core/_base/module");
 var currency_model_1 = require("./models/currency.model");
+var common_controller_1 = require("./controllers/common.controller");
 var CommonModule = /** @class */ (function (_super) {
     __extends(CommonModule, _super);
     function CommonModule() {
         return _super.call(this, {
-            controllers: [],
+            controllers: [common_controller_1.default],
             models: [currency_model_1.CurrencyModel]
         }) || this;
     }

@@ -2,10 +2,11 @@ import {
   Entity,
   Column,
   BaseEntity,
-  ObjectIdColumn,
-  ObjectID,
+  PrimaryGeneratedColumn,
   Index,
-  OneToOne
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn
 } from 'typeorm';
 import { UserModel } from './user.model';
 export enum Gender {
@@ -15,11 +16,11 @@ export enum Gender {
 }
 @Entity()
 export class ProfileModel extends BaseEntity {
-  @ObjectIdColumn()
-  public id: ObjectID;
+  @PrimaryGeneratedColumn()
+  public id: number;
 
   @Column()
-  @Index({ unique: true })
+  @Index({ unique: true, expireAfterSeconds: 3600 })
   public ci: string;
 
   @Column()
@@ -35,7 +36,7 @@ export class ProfileModel extends BaseEntity {
   })
   public gender: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type:'date', nullable: true })
   public birthday: Date;
 
   @Column({ nullable: true })
@@ -45,5 +46,6 @@ export class ProfileModel extends BaseEntity {
     type => UserModel,
     user => user.profile,
   )
+  @JoinColumn()
   public user: UserModel;
 }

@@ -32,7 +32,7 @@ var CurrencyModel = /** @class */ (function (_super) {
     var CurrencyModel_1;
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", typeorm_1.ObjectID)
+        __metadata("design:type", Number)
     ], CurrencyModel.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column(),
@@ -40,12 +40,12 @@ var CurrencyModel = /** @class */ (function (_super) {
     ], CurrencyModel.prototype, "symbol", void 0);
     __decorate([
         typeorm_1.Column({ length: 2, type: 'varchar' }),
-        typeorm_1.Index({ unique: true }),
+        typeorm_1.Index({ unique: true, expireAfterSeconds: 3600 }),
         __metadata("design:type", String)
     ], CurrencyModel.prototype, "codeIso2", void 0);
     __decorate([
         typeorm_1.Column({ length: 3, type: 'varchar' }),
-        typeorm_1.Index({ unique: true }),
+        typeorm_1.Index({ unique: true, expireAfterSeconds: 3600 }),
         __metadata("design:type", String)
     ], CurrencyModel.prototype, "codeIso3", void 0);
     __decorate([
@@ -53,11 +53,11 @@ var CurrencyModel = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], CurrencyModel.prototype, "name", void 0);
     __decorate([
-        typeorm_1.Column({ type: 'decimal', precision: 6, scale: 6 }),
+        typeorm_1.Column({ type: 'decimal', precision: 13, scale: 4 }),
         __metadata("design:type", Number)
     ], CurrencyModel.prototype, "exchangeRateOutcome", void 0);
     __decorate([
-        typeorm_1.Column({ type: 'decimal', precision: 6, scale: 6 }),
+        typeorm_1.Column({ type: 'decimal', precision: 13, scale: 4 }),
         __metadata("design:type", Number)
     ], CurrencyModel.prototype, "exchangeRateIncome", void 0);
     __decorate([

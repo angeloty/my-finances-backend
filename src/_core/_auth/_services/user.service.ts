@@ -7,7 +7,7 @@ import TokenData from '../../_base/_security/_interfaces/tokenData.interface';
 import applicationContext from '../../application.context';
 export class BaseUserService<T extends BaseUserModel> extends Service<T> {
   protected repository: Repository<T>;
-  protected relations: { relations?: string[] } = { relations: [] };
+  protected relations: string[] = [];
   private modelClass: any;
 
   constructor(modelClass?: new () => T) {
@@ -17,16 +17,16 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
 
   public getAll = async () => {
     try {
-      const options = Object.assign({}, this.relations);
+      const options = Object.assign({}, { relations: this.relations });
       return await this.getRepository(this.modelClass).find(options);
     } catch (e) {
       throw e;
     }
   }
 
-  public findById = async (id: string | ObjectID) => {
+  public findById = async (id: string | ObjectID | number) => {
     try {
-      const options = Object.assign({}, this.relations);
+      const options = Object.assign({}, { relations: this.relations });
       const user = await this.getRepository(this.modelClass).findOne(
         id,
         options
@@ -49,15 +49,17 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
   }
 
   public update = async (
-    id: string | ObjectID,
-    body: { [P in keyof T]: any }
+    id: string | ObjectID | number,
+    body: { [P in keyof T]: any },
+    forceData?: { [index: string]: any }
   ): Promise<T> => {
     try {
       return await UserProvider.update(
         this.connection,
         this.modelClass,
         id,
-        body
+        body,
+        forceData
       );
     } catch (e) {
       throw e;
@@ -88,7 +90,7 @@ export class BaseUserService<T extends BaseUserModel> extends Service<T> {
     return UserProvider.createCookie(tokenData);
   }
 
-  public remove = async (id: string | ObjectID): Promise<boolean> => {
+  public remove = async (id: string | ObjectID | number): Promise<boolean> => {
     try {
       return await UserProvider.remove(this.connection, this.modelClass, id);
     } catch (e) {

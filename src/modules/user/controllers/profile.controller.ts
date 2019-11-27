@@ -46,10 +46,11 @@ export class ProfileController extends BaseController {
     next: express.NextFunction
   ) {
     try {
-      const saved: ProfileModel = await this.service.create(
+      const saved: ProfileModel = await this.service.save(
         request.body,
         request.user
       );
+      const profile = await this.service.find(saved.id);
       return response.status(200).send(saved);
     } catch (e) {
       return this.handleError(e, response);
@@ -63,8 +64,7 @@ export class ProfileController extends BaseController {
     next: express.NextFunction
   ) {
     try {
-      const saved: ProfileModel = await this.service.update(
-        request.user.id.toString(),
+      const saved: ProfileModel = await this.service.save(
         request.body,
         request.user
       );

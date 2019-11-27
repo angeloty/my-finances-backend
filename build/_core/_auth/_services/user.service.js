@@ -57,14 +57,14 @@ var BaseUserService = /** @class */ (function (_super) {
     __extends(BaseUserService, _super);
     function BaseUserService(modelClass) {
         var _this = _super.call(this, application_context_1.default.connection) || this;
-        _this.relations = { relations: [] };
+        _this.relations = [];
         _this.getAll = function () { return __awaiter(_this, void 0, void 0, function () {
             var options, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        options = Object.assign({}, this.relations);
+                        options = Object.assign({}, { relations: this.relations });
                         return [4 /*yield*/, this.getRepository(this.modelClass).find(options)];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
@@ -80,7 +80,7 @@ var BaseUserService = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        options = Object.assign({}, this.relations);
+                        options = Object.assign({}, { relations: this.relations });
                         return [4 /*yield*/, this.getRepository(this.modelClass).findOne(id, options)];
                     case 1:
                         user = _a.sent();
@@ -110,13 +110,13 @@ var BaseUserService = /** @class */ (function (_super) {
                 }
             });
         }); };
-        _this.update = function (id, body) { return __awaiter(_this, void 0, void 0, function () {
+        _this.update = function (id, body, forceData) { return __awaiter(_this, void 0, void 0, function () {
             var e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, user_provider_1.UserProvider.update(this.connection, this.modelClass, id, body)];
+                        return [4 /*yield*/, user_provider_1.UserProvider.update(this.connection, this.modelClass, id, body, forceData)];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
                         e_4 = _a.sent();

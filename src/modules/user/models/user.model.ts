@@ -13,9 +13,8 @@ import { ProfileModel } from './profile.model';
 
 @Entity()
 export class UserModel extends BaseUserModel {
-  @OneToOne(
-    type => ProfileModel,
-    profile => profile.user
-  )
+  @OneToOne(type => ProfileModel, profile => profile.user, {
+    eager: true
+  })
   public profile: ProfileModel;
 }

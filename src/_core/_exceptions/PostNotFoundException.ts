@@ -1,7 +1,7 @@
 import HttpException from './HttpException';
 
 class PostNotFoundException extends HttpException {
-  constructor(id: string) {
+  constructor(id: any) {
     super(404, `Element with id ${id} not found`);
   }
 }

@@ -15,12 +15,13 @@ import UserNotFoundException from '../_exceptions/userNotFound.exception';
 import InvalidUserDataException from '../_exceptions/invalidUserData.exception';
 import HttpException from '../../../_exceptions/HttpException';
 import { ROLE } from '../_interfaces/roles.enum';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class UserProvider {
   public static async find<U extends BaseUserModel>(
     connection: Connection,
     modelClass: new () => U,
-    id: string | ObjectID
+    id: string | ObjectID | number
   ): Promise<U> {
     try {
       const repository = connection.getRepository(modelClass);
@@ -43,7 +44,7 @@ export class UserProvider {
       const element: U = repository.merge(new modelClass() as U, user);
       element.password = await bcrypt.hash(user.password, 10);
       element.active = true;
-      element.roles = [ROLE.USER];
+      element.role = ROLE.USER;
       const saved: U = await repository.save(element as any);
       return saved;
     } catch (e) {
@@ -57,16 +58,33 @@ export class UserProvider {
   public static async update<U extends BaseUserModel>(
     connection: Connection,
     modelClass: new () => U,
-    id: string | ObjectID,
-    data: { [key: string]: any }
+    id: string | ObjectID | number,
+    data: { [P in keyof U]: any },
+    forceData: { [key: string]: any }
   ): Promise<U> {
     try {
       const repository = connection.getRepository(modelClass);
-      const element: U = await UserProvider.find<U>(connection, modelClass, id);
-      if (element) {
-        element.username = data.username ? data.username : element.username;
-        element.email = data.email ? data.email : element.email;
-        return await repository.save(element as unknown as DeepPartial<U>);
+      const user: U = await UserProvider.find<U>(connection, modelClass, id);
+      if (user) {
+        const updated = {
+          username: data.username ? data.username : user.username,
+          email: data.email ? data.email : user.email
+        };
+        if (forceData) {
+          for (const index in forceData) {
+            if (forceData.hasOwnProperty(index)) {
+              updated[index] = forceData[index];
+            }
+          }
+        }
+        const updateResult = await repository.update(
+          user.id,
+          (repository.merge(
+            user,
+            updated as DeepPartial<U>
+          ) as unknown) as QueryDeepPartialEntity<U>
+        );
+        return await UserProvider.find<U>(connection, modelClass, user.id);
       }
       throw new UserNotFoundException();
     } catch (e) {
@@ -80,7 +98,7 @@ export class UserProvider {
   public static async remove<U extends BaseUserModel>(
     connection: Connection,
     modelClass: new () => U,
-    id: string | ObjectID
+    id: string | ObjectID | number
   ) {
     try {
       const repository = connection.getRepository(modelClass);
@@ -107,15 +125,24 @@ export class UserProvider {
       const result: U[] = await repository.find({
         where: {
           username
-        }
+        },
+        select: ['password', 'username', 'id']
       });
       if (result.length) {
-        const user = result[0];
-        const passwordMatching = await bcrypt.compare(password, user.password);
+        const loggedIn = result[0];
+        const passwordMatching = await bcrypt.compare(
+          password,
+          loggedIn.password
+        );
         if (passwordMatching) {
-          const jwToken = UserProvider.createToken<U>(user);
+          const jwToken = UserProvider.createToken<U>(loggedIn);
           const token = jwToken.token;
           const cookie = UserProvider.createCookie(jwToken);
+          const user: U = await UserProvider.find(
+            connection,
+            modelClass,
+            loggedIn.id
+          );
           return { user, token, cookie };
         }
       }

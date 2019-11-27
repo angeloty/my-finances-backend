@@ -32,7 +32,7 @@ async function authMiddleware(
         secret
       ) as DataStoredInToken;
       const id = verificationResponse._id;
-      const connection = getConnection(process.env.DB_ADAPTER);
+      const connection = getConnection();
       const user = await UserProvider.find(connection, securityContext.userModel, id);
       request.user = user;
       next();

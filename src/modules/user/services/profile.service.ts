@@ -1,5 +1,5 @@
 import applicationContext from '../../../_core/application.context';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Repository, UpdateResult, ObjectID } from 'typeorm';
 import PostNotFoundException from '../../../_core/_exceptions/PostNotFoundException';
 import { ProfileModel } from '../models/profile.model';
 import { UserModel } from '../models/user.model';
@@ -15,7 +15,7 @@ export class ProfileService {
     this.userService = new UserService();
   }
 
-  public find = async (id: string): Promise<ProfileModel> => {
+  public find = async (id: string | number | ObjectID): Promise<ProfileModel> => {
     try {
       const element: ProfileModel = await this.repository.findOne(id);
       if (element) {
@@ -35,38 +35,28 @@ export class ProfileService {
     }
   }
 
-  public create = async (
-    test: DeepPartial<ProfileModel>,
+  public save = async (
+    profileData: DeepPartial<ProfileModel>,
     user: UserModel
   ): Promise<ProfileModel> => {
+    const userModel: UserModel = await this.userService.findById(user.id);
     try {
-      const userModel: UserModel = await this.userService.findById(user.id.toString());
-      const currentProfile = await userModel.profile;
-      const profile: ProfileModel = await this.repository.save(
-        this.repository.merge((currentProfile || new ProfileModel()), test)
-      );
-      user.profile = profile;
-      await this.userService.update(user.id, user);
-      return profile;
+      let profile = userModel.profile;
+      if (!profile) {
+        profile = new ProfileModel();
+        profile.user = userModel;
+      }
+      if (profileData.birthday) {
+        if (!(profile.birthday instanceof Date)) {
+          profileData.birthday = new Date(profileData.birthday as Date);
+        }
+      }
+      profile = this.repository.merge(profile, profileData);
+      return await profile.save();
     } catch (e) {
-      throw e;
-    }
-  }
-
-  public update = async (
-    id: string,
-    test: DeepPartial<ProfileModel>,
-    user: UserModel
-  ): Promise<ProfileModel> => {
-    try {
-      const toUpdate = await this.find(id);
-      const profile: ProfileModel = await this.repository.save(
-        this.repository.merge(toUpdate, test)
-      );
-      user.profile = profile;
-      profile.user = await this.userService.update(user.id, user);
-      return profile;
-    } catch (e) {
+      if (e.code === 9) {
+        return userModel.profile;
+      }
       throw e;
     }
   }

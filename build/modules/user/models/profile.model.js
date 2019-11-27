@@ -36,12 +36,12 @@ var ProfileModel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.ObjectIdColumn(),
-        __metadata("design:type", typeorm_1.ObjectID)
+        typeorm_1.PrimaryGeneratedColumn(),
+        __metadata("design:type", Number)
     ], ProfileModel.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column(),
-        typeorm_1.Index({ unique: true }),
+        typeorm_1.Index({ unique: true, expireAfterSeconds: 3600 }),
         __metadata("design:type", String)
     ], ProfileModel.prototype, "ci", void 0);
     __decorate([
@@ -70,6 +70,7 @@ var ProfileModel = /** @class */ (function (_super) {
     ], ProfileModel.prototype, "photo", void 0);
     __decorate([
         typeorm_1.OneToOne(function (type) { return user_model_1.UserModel; }, function (user) { return user.profile; }),
+        typeorm_1.JoinColumn(),
         __metadata("design:type", user_model_1.UserModel)
     ], ProfileModel.prototype, "user", void 0);
     ProfileModel = __decorate([

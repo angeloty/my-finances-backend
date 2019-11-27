@@ -3,6 +3,6 @@ import { UserModel } from '../models/user.model';
 export class UserService extends BaseUserService<UserModel> {
   constructor() {
     super(UserModel);
-    this.relations = { relations: ['profile'] };
+    this.relations = ['profile'];
   }
 }

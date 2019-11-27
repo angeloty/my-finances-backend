@@ -41,6 +41,7 @@ var wrongCredentials_exception_1 = require("../_exceptions/wrongCredentials.exce
 var userNotFound_exception_1 = require("../_exceptions/userNotFound.exception");
 var invalidUserData_exception_1 = require("../_exceptions/invalidUserData.exception");
 var HttpException_1 = require("../../../_exceptions/HttpException");
+var roles_enum_1 = require("../_interfaces/roles.enum");
 var UserProvider = /** @class */ (function () {
     function UserProvider() {
     }
@@ -81,7 +82,7 @@ var UserProvider = /** @class */ (function () {
                     case 1:
                         _a.password = _b.sent();
                         element.active = true;
-                        element.roles = ["USER" /* USER */];
+                        element.role = roles_enum_1.ROLE.USER;
                         return [4 /*yield*/, repository.save(element)];
                     case 2:
                         saved = _b.sent();
@@ -97,30 +98,42 @@ var UserProvider = /** @class */ (function () {
             });
         });
     };
-    UserProvider.update = function (connection, modelClass, id, data) {
+    UserProvider.update = function (connection, modelClass, id, data, forceData) {
         return __awaiter(this, void 0, void 0, function () {
-            var repository, element, e_3;
+            var repository, user, updated, index, updateResult, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 5, , 6]);
                         repository = connection.getRepository(modelClass);
                         return [4 /*yield*/, UserProvider.find(connection, modelClass, id)];
                     case 1:
-                        element = _a.sent();
-                        if (!element) return [3 /*break*/, 3];
-                        element.username = data.username ? data.username : element.username;
-                        element.email = data.email ? data.email : element.email;
-                        return [4 /*yield*/, repository.save(element)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3: throw new userNotFound_exception_1.default();
-                    case 4:
+                        user = _a.sent();
+                        if (!user) return [3 /*break*/, 4];
+                        updated = {
+                            username: data.username ? data.username : user.username,
+                            email: data.email ? data.email : user.email
+                        };
+                        if (forceData) {
+                            for (index in forceData) {
+                                if (forceData.hasOwnProperty(index)) {
+                                    updated[index] = forceData[index];
+                                }
+                            }
+                        }
+                        return [4 /*yield*/, repository.update(user.id, repository.merge(user, updated))];
+                    case 2:
+                        updateResult = _a.sent();
+                        return [4 /*yield*/, UserProvider.find(connection, modelClass, user.id)];
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4: throw new userNotFound_exception_1.default();
+                    case 5:
                         e_3 = _a.sent();
                         if (e_3.code === 11000) {
                             throw new invalidUserData_exception_1.default();
                         }
                         throw new invalidUserData_exception_1.default();
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -154,36 +167,38 @@ var UserProvider = /** @class */ (function () {
     };
     UserProvider.login = function (connection, modelClass, username, password) {
         return __awaiter(this, void 0, void 0, function () {
-            var repository, result, user, passwordMatching, jwToken, token, cookie, e_5;
+            var repository, result, loggedIn, passwordMatching, jwToken, token, cookie, user, e_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 5, , 6]);
                         repository = connection.getRepository(modelClass);
                         return [4 /*yield*/, repository.find({
                                 where: {
                                     username: username
-                                }
+                                },
+                                select: ['password', 'username', 'id']
                             })];
                     case 1:
                         result = _a.sent();
-                        if (!result.length) return [3 /*break*/, 3];
-                        user = result[0];
-                        return [4 /*yield*/, bcrypt.compare(password, user.password)];
+                        if (!result.length) return [3 /*break*/, 4];
+                        loggedIn = result[0];
+                        return [4 /*yield*/, bcrypt.compare(password, loggedIn.password)];
                     case 2:
                         passwordMatching = _a.sent();
-                        if (passwordMatching) {
-                            jwToken = UserProvider.createToken(user);
-                            token = jwToken.token;
-                            cookie = UserProvider.createCookie(jwToken);
-                            return [2 /*return*/, { user: user, token: token, cookie: cookie }];
-                        }
-                        _a.label = 3;
-                    case 3: throw new wrongCredentials_exception_1.default();
-                    case 4:
+                        if (!passwordMatching) return [3 /*break*/, 4];
+                        jwToken = UserProvider.createToken(loggedIn);
+                        token = jwToken.token;
+                        cookie = UserProvider.createCookie(jwToken);
+                        return [4 /*yield*/, UserProvider.find(connection, modelClass, loggedIn.id)];
+                    case 3:
+                        user = _a.sent();
+                        return [2 /*return*/, { user: user, token: token, cookie: cookie }];
+                    case 4: throw new wrongCredentials_exception_1.default();
+                    case 5:
                         e_5 = _a.sent();
                         throw e_5;
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

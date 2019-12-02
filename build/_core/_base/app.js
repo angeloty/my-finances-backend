@@ -49,14 +49,16 @@ var App = /** @class */ (function () {
             });
         };
         this.init = function (config) { return __awaiter(_this, void 0, void 0, function () {
-            var e_1;
+            var app, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         this.initializeMiddleware(config.middleware);
                         return [4 /*yield*/, this.initializeModules(config.modules)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1:
+                        app = _a.sent();
+                        return [2 /*return*/, app];
                     case 2:
                         e_1 = _a.sent();
                         console.log('Error', e_1);
@@ -137,10 +139,11 @@ var App = /** @class */ (function () {
             return _this;
         };
         this.app = express();
+        application_context_1.applicationContext.app = this;
         this.context = application_context_1.applicationContext;
-        this.context.app = this;
     }
     return App;
 }());
+exports.App = App;
 exports.default = App;
 //# sourceMappingURL=app.js.map

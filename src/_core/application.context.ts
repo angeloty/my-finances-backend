@@ -38,23 +38,29 @@ export const applicationContext: IApplicationContext = {
     }
     process.env.NODE_ENV = config.environment;
     configEnv();
-    const DB_NAME = 'db.json';
-    const UPLOAD_PATH = process.env.UPLOAD_DIR || 'uploads/';
-    applicationContext.uploader = multer({ dest: `${UPLOAD_PATH}` }); // multer configuration
-    applicationContext.fileDB = new Loki(`${UPLOAD_PATH}/${DB_NAME}`, {
-      persistenceMethod: 'fs'
-    });
+    if (!applicationContext.uploader) {
+      const DB_NAME = 'db.json';
+      const UPLOAD_PATH = process.env.UPLOAD_DIR || 'uploads/';
+      applicationContext.uploader = multer({ dest: `${UPLOAD_PATH}` }); // multer configuration
+      applicationContext.fileDB = new Loki(`${UPLOAD_PATH}/${DB_NAME}`, {
+        persistenceMethod: 'fs'
+      });
+    }
     if (config.security) {
       securityContext.set(config.security);
     }
     try {
-      const app = new App();
-      return await app.init({
-        modules: config.modules,
-        middleware: config.middleware
-      });
+      if (!applicationContext.app) {
+        applicationContext.app = new App();
+        return await applicationContext.app.init({
+          modules: config.modules,
+          middleware: config.middleware
+        });
+      }
+      return Promise.resolve(applicationContext.app);
     } catch (error) {
       console.log(error);
+      throw error;
     }
   },
   run(app: App) {

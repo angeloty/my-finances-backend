@@ -107,7 +107,7 @@ var EntryService = /** @class */ (function () {
                         return [4 /*yield*/, this.repository
                                 .createQueryBuilder('entry')
                                 .innerJoinAndSelect('entry.currency', 'currency')
-                                .innerJoin('entry.owner', 'owner', 'owner.id = :id', { id: id })
+                                .innerJoinAndSelect('entry.owner', 'owner', 'owner.id = :id', { id: id })
                                 .getMany()];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:

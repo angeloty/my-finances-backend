@@ -115,7 +115,6 @@ var DBManager = /** @class */ (function () {
                             }
                         }
                         : options;
-                    console.log('Connection options', opt);
                     return [4 /*yield*/, typeorm_1.createConnection(opt)];
                 case 1: return [2 /*return*/, _a.sent()];
                 case 2:

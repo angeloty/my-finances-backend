@@ -76,7 +76,7 @@ var ProfileController = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.service.find(request.user.id.toString())];
+                        return [4 /*yield*/, this.service.findByUser(request.user.id.toString())];
                     case 1:
                         element = _a.sent();
                         if (element) {
@@ -104,7 +104,7 @@ var ProfileController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.service.find(saved.id)];
                     case 2:
                         profile = _a.sent();
-                        return [2 /*return*/, response.status(200).send(saved)];
+                        return [2 /*return*/, response.status(201).send(saved)];
                     case 3:
                         e_2 = _a.sent();
                         return [2 /*return*/, this.handleError(e_2, response)];

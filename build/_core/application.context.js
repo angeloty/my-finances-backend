@@ -48,7 +48,7 @@ exports.applicationContext = {
     uploader: null,
     fileDB: null,
     init: function (config) { return __awaiter(_this, void 0, void 0, function () {
-        var DB_NAME, UPLOAD_PATH, app, error_1;
+        var DB_NAME, UPLOAD_PATH, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -57,29 +57,33 @@ exports.applicationContext = {
                     }
                     process.env.NODE_ENV = config.environment;
                     config_1.default();
-                    DB_NAME = 'db.json';
-                    UPLOAD_PATH = process.env.UPLOAD_DIR || 'uploads/';
-                    exports.applicationContext.uploader = multer({ dest: "" + UPLOAD_PATH }); // multer configuration
-                    exports.applicationContext.fileDB = new Loki(UPLOAD_PATH + "/" + DB_NAME, {
-                        persistenceMethod: 'fs'
-                    });
+                    if (!exports.applicationContext.uploader) {
+                        DB_NAME = 'db.json';
+                        UPLOAD_PATH = process.env.UPLOAD_DIR || 'uploads/';
+                        exports.applicationContext.uploader = multer({ dest: "" + UPLOAD_PATH }); // multer configuration
+                        exports.applicationContext.fileDB = new Loki(UPLOAD_PATH + "/" + DB_NAME, {
+                            persistenceMethod: 'fs'
+                        });
+                    }
                     if (config.security) {
                         security_context_1.securityContext.set(config.security);
                     }
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    app = new app_1.default();
-                    return [4 /*yield*/, app.init({
+                    _a.trys.push([1, 4, , 5]);
+                    if (!!exports.applicationContext.app) return [3 /*break*/, 3];
+                    exports.applicationContext.app = new app_1.default();
+                    return [4 /*yield*/, exports.applicationContext.app.init({
                             modules: config.modules,
                             middleware: config.middleware
                         })];
                 case 2: return [2 /*return*/, _a.sent()];
-                case 3:
+                case 3: return [2 /*return*/, Promise.resolve(exports.applicationContext.app)];
+                case 4:
                     error_1 = _a.sent();
                     console.log(error_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    throw error_1;
+                case 5: return [2 /*return*/];
             }
         });
     }); },

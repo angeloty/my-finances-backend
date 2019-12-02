@@ -59,6 +59,7 @@ var Environment = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        if (!!this.app) return [3 /*break*/, 2];
                         _a = this;
                         return [4 /*yield*/, application_context_1.applicationContext.init({
                                 modules: this.config.modules,
@@ -69,6 +70,7 @@ var Environment = /** @class */ (function () {
                     case 1:
                         _a.app = _b.sent();
                         return [2 /*return*/, this.app];
+                    case 2: return [2 /*return*/, Promise.resolve(this.app)];
                 }
             });
         }); };

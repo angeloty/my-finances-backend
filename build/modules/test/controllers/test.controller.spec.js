@@ -36,110 +36,122 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var test_index_1 = require("../../../test.index");
-var supertest = require("supertest");
-var appContainer;
-var request;
-beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, test_index_1.default];
-            case 1:
-                appContainer = _a.sent();
-                request = supertest(appContainer.app);
-                return [2 /*return*/];
-        }
-    });
-}); });
-var testModel = {
-    name: 'Testing',
-    description: 'Test description'
-};
-test('Testing insert test', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .post('/test/test')
-                    .set('Content-Type', 'application/json')
-                    .send(testModel)
-                    .expect(201)];
-            case 1:
-                response = _a.sent();
-                expect(response.body.name).toBe(testModel.name);
-                expect(response.body.description).toBe(testModel.description);
-                testModel.id = response.body.id;
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing get test', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .get('/test/test/' + testModel.id)
-                    .send()
-                    .expect(200)];
-            case 1:
-                response = _a.sent();
-                expect(response.body.name).toBe(testModel.name);
-                expect(response.body.description).toBe(testModel.description);
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing update test', function () { return __awaiter(_this, void 0, void 0, function () {
-    var newModel, response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                newModel = testModel;
-                newModel.name = 'Test Updated';
-                newModel.description = 'Test description updated';
-                return [4 /*yield*/, request
-                        .put('/test/test/' + testModel.id)
-                        .send(newModel)
-                        .expect(200)];
-            case 1:
-                response = _a.sent();
-                expect(response.body.name).toBe(newModel.name);
-                expect(response.body.description).toBe(newModel.description);
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing get all tests', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .get('/test/test')
-                    .send()
-                    .expect(200)];
-            case 1:
-                response = _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing delete test', function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .delete('/test/test/' + testModel.id)
-                    .send()
-                    .expect(204)];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, request
-                        .put('/test/test/' + testModel.id)
+var test_helper_1 = require("../../../_test/helpers/test.helper");
+describe('Sample tests', function () {
+    var helper = test_helper_1.default;
+    var suite = 'sample-test';
+    beforeAll(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.initSuite(suite, {
+                        auth: true
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    afterAll(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.endSuite(suite)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    var testModel = {
+        name: 'Testing',
+        description: 'Test description'
+    };
+    test('Testing insert test', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .post('/test/test')
+                        .set('Content-Type', 'application/json')
+                        .send(testModel)
+                        .expect(201)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.name).toBe(testModel.name);
+                    expect(response.body.description).toBe(testModel.description);
+                    testModel.id = response.body.id;
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing get test', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .get("/test/test/" + testModel.id.toString())
                         .send()
-                        .expect(404)];
-            case 2:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
+                        .expect(200)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.name).toBe(testModel.name);
+                    expect(response.body.description).toBe(testModel.description);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing update test', function () { return __awaiter(_this, void 0, void 0, function () {
+        var newModel, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    newModel = testModel;
+                    newModel.name = 'Test Updated';
+                    newModel.description = 'Test description updated';
+                    return [4 /*yield*/, helper.request
+                            .put("/test/test/" + testModel.id.toString())
+                            .send(newModel)
+                            .expect(200)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.name).toBe(newModel.name);
+                    expect(response.body.description).toBe(newModel.description);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing get all tests', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .get('/test/test')
+                        .send()
+                        .expect(200)];
+                case 1:
+                    response = _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing delete test', function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .delete("/test/test/" + testModel.id.toString())
+                        .send()
+                        .expect(204)];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, helper.request
+                            .put("/test/test/" + testModel.id.toString())
+                            .send()
+                            .expect(404)];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
 //# sourceMappingURL=test.controller.spec.js.map

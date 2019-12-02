@@ -35,6 +35,28 @@ var ProfileModel = /** @class */ (function (_super) {
     function ProfileModel() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    ProfileModel.prototype.toObject = function () {
+        var user = this.user;
+        if (user && user.profile) {
+            delete user.profile;
+        }
+        return {
+            user: user,
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            ci: this.ci,
+            gender: this.gender,
+            birthday: this.birthday,
+            photo: this.photo
+        };
+    };
+    ProfileModel.prototype.toJSON = function () {
+        return this.toObject();
+    };
+    ProfileModel.prototype.toJson = function () {
+        return this.toObject();
+    };
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)

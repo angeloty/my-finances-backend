@@ -5,11 +5,12 @@ var user_module_1 = require("./modules/user/user.module");
 require("reflect-metadata");
 var express = require("express");
 var cookieParser = require("cookie-parser");
+var test_module_1 = require("./modules/test/test.module");
 var environment_1 = require("./_core/_base/environment");
 var finances_module_1 = require("./modules/finances/finances.module");
 var common_module_1 = require("./modules/common/common.module");
 var appEnvironment = new environment_1.Environment({
-    modules: [common_module_1.default, finances_module_1.FinancesModule, user_module_1.UserModule],
+    modules: [common_module_1.default, finances_module_1.FinancesModule, user_module_1.UserModule, test_module_1.TestModule],
     environment: process.env.NODE_ENV,
     middleware: [
         express.urlencoded.bind(express, { extended: false }),

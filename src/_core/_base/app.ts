@@ -1,4 +1,7 @@
-import { applicationContext, IApplicationContext } from './../application.context';
+import {
+  applicationContext,
+  IApplicationContext
+} from './../application.context';
 import { BaseUserModel } from './../_auth/_models/user.model';
 import { Module } from './module';
 import * as express from 'express';
@@ -10,7 +13,7 @@ import {
   ParamsDictionary
 } from 'express-serve-static-core';
 
-class App {
+export class App {
   public app: express.Application;
   public connection: Connection;
   public moduleInstances: Module[] = [];
@@ -19,8 +22,8 @@ class App {
 
   constructor() {
     this.app = express();
+    applicationContext.app = this;
     this.context = applicationContext;
-    this.context.app = this;
   }
 
   public listen = (): void => {
@@ -35,7 +38,8 @@ class App {
   }): Promise<App> => {
     try {
       this.initializeMiddleware(config.middleware);
-      return await this.initializeModules(config.modules);
+      const app = await this.initializeModules(config.modules);
+      return app;
     } catch (e) {
       console.log('Error', e);
       throw e;
@@ -69,6 +73,7 @@ class App {
       console.log(
         `DB Connection: ${process.env.DB_ADAPTER.toLocaleUpperCase()} ......... Connected`
       );
+
       for (const module of this.moduleInstances) {
         this.app = await module.init('/', this, this.connection);
       }

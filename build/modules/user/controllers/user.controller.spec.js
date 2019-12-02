@@ -36,182 +36,185 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var test_index_1 = require("../../../test.index");
-var supertest = require("supertest");
-var appContainer;
-var request;
-beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, test_index_1.default];
-            case 1:
-                appContainer = _a.sent();
-                request = supertest(appContainer.app);
-                return [2 /*return*/];
-        }
-    });
-}); });
-var userModel = {
-    username: 'user-test',
-    email: 'user-test@mail',
-    password: '1234567890'
-};
-var token = '';
-test('Testing insert user', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .post('/users/signup')
-                    .set('Content-Type', 'application/json')
-                    .send(userModel)
-                    .expect(201)];
-            case 1:
-                response = _a.sent();
-                expect(response.body.username).toBe(userModel.username);
-                expect(response.body.email).toBe(userModel.email);
-                expect(response.body.active).toBeTruthy();
-                expect(response.body.id).not.toBeNull();
-                userModel.id = response.body.id;
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing user login', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .post('/users/signin')
-                    .set('Content-Type', 'application/json')
-                    .send(userModel)
-                    .expect(200)];
-            case 1:
-                response = _a.sent();
-                expect(response.body.user).not.toBeNull();
-                expect(response.body.token).not.toBeNull();
-                expect(response.body.user.username).toBe(userModel.username);
-                expect(response.body.user.email).toBe(userModel.email);
-                expect(response.body.user.id).toBe(userModel.id);
-                token = response.body.token;
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing get user', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .get('/users/' + userModel.id)
-                    .set('Authorization', 'Bearer ' + token)
-                    .send()
-                    .expect(200)];
-            case 1:
-                response = _a.sent();
-                expect(response.body.username).toBe(userModel.username);
-                expect(response.body.email).toBe(userModel.email);
-                expect(response.body.id).toBe(userModel.id);
-                expect(response.body.active).toBeTruthy();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing update user', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .put('/users/' + userModel.id)
-                    .set('Content-Type', 'application/json')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                    username: 'new-test',
-                    email: 'new-test@email'
-                })
-                    .expect(200)];
-            case 1:
-                response = _a.sent();
-                userModel.username = 'new-test';
-                userModel.email = 'new-test@email';
-                expect(response.body.username).toBe(userModel.username);
-                expect(response.body.email).toBe(userModel.email);
-                expect(response.body.id).toBe(userModel.id);
-                expect(response.body.active).toBeTruthy();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing block username duplicated', function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .post('/users')
-                    .set('Content-Type', 'application/json')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                    username: 'new-test',
-                    email: 'other@email',
-                    password: '1234567'
-                })
-                    .expect(400)];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing block email duplicated', function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .post('/users')
-                    .set('Content-Type', 'application/json')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                    username: 'other-new-test',
-                    email: 'new-test@email',
-                    password: '1234567'
-                })
-                    .expect(400)];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing get all users', function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .get('/users')
-                    .send()
-                    .expect(200)];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing delete user', function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .delete('/users/' + userModel.id)
-                    .set('Authorization', 'Bearer ' + token)
-                    .send()
-                    .expect(204)];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, request
-                        .get('/users/' + userModel.id)
-                        .set('Authorization', 'Bearer ' + token)
+var test_helper_1 = require("../../../_test/helpers/test.helper");
+describe('User Tests', function () {
+    var suite = 'user-test';
+    var helper = test_helper_1.default;
+    beforeAll(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.initSuite(suite)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    afterAll(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.endSuite(suite)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing insert user', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .post('/users/signup')
+                        .set('Content-Type', 'application/json')
+                        .send(helper.getUser(suite))
+                        .expect(201)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.username).toBe(helper.getUser(suite).username);
+                    expect(response.body.email).toBe(helper.getUser(suite).email);
+                    expect(response.body.active).toBeTruthy();
+                    expect(response.body.id).not.toBeNull();
+                    helper.setUser(suite, { id: response.body.id });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing user login', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .post('/users/signin')
+                        .set('Content-Type', 'application/json')
+                        .send(helper.getUser(suite))
+                        .expect(200)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.user).not.toBeNull();
+                    expect(response.body.token).not.toBeNull();
+                    expect(response.body.user.username).toBe(helper.getUser(suite).username);
+                    expect(response.body.user.email).toBe(helper.getUser(suite).email);
+                    expect(response.body.user.id).toBe(helper.getUser(suite).id);
+                    helper.setToken(suite, response.body.token);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing get user', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .get("/users/" + helper.getUser(suite).id)
+                        .set('Authorization', "Bearer " + helper.getToken(suite))
                         .send()
-                        .expect(404)];
-            case 2:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
+                        .expect(200)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.username).toBe(helper.getUser(suite).username);
+                    expect(response.body.email).toBe(helper.getUser(suite).email);
+                    expect(response.body.id).toBe(helper.getUser(suite).id);
+                    expect(response.body.active).toBeTruthy();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing update user', function () { return __awaiter(_this, void 0, void 0, function () {
+        var user, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    user = {
+                        username: 'new-test',
+                        email: 'new-test@email'
+                    };
+                    return [4 /*yield*/, helper.request
+                            .put("/users/" + helper.getUser(suite).id)
+                            .set('Content-Type', 'application/json')
+                            .set('Authorization', "Bearer " + helper.getToken(suite))
+                            .send(user)
+                            .expect(200)];
+                case 1:
+                    response = _a.sent();
+                    helper.setUser(suite, user);
+                    expect(response.body.username).toBe(helper.getUser(suite).username);
+                    expect(response.body.email).toBe(helper.getUser(suite).email);
+                    expect(response.body.id).toBe(helper.getUser(suite).id);
+                    expect(response.body.active).toBeTruthy();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing block username duplicated', function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .post('/users/signup')
+                        .set('Content-Type', 'application/json')
+                        .send({
+                        username: helper.getUser(suite).username,
+                        email: 'other@email',
+                        password: '1234567'
+                    })
+                        .expect(400)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing block email duplicated', function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .post('/users/signup')
+                        .set('Content-Type', 'application/json')
+                        .send({
+                        username: 'other-new-test',
+                        email: helper.getUser(suite).email,
+                        password: '1234567'
+                    })
+                        .expect(400)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing get all users', function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .get('/users')
+                        .send()
+                        .expect(200)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing delete user', function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .delete("/users/" + helper.getUser(suite).id)
+                        .set('Authorization', "Bearer " + helper.getToken(suite))
+                        .send()
+                        .expect(204)];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, helper.request
+                            .get("/users/" + helper.getUser(suite).id)
+                            .set('Authorization', "Bearer " + helper.getToken(suite))
+                            .send()
+                            .expect(404)];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
 //# sourceMappingURL=user.controller.spec.js.map

@@ -44,14 +44,11 @@ export class UserProvider {
       const element: U = repository.merge(new modelClass() as U, user);
       element.password = await bcrypt.hash(user.password, 10);
       element.active = true;
-      element.role = ROLE.USER;
+      element.role = user.role ? user.role : ROLE.USER;
       const saved: U = await repository.save(element as any);
       return saved;
     } catch (e) {
-      if (e.code === 11000) {
-        throw new InvalidUserDataException();
-      }
-      throw e;
+      throw new InvalidUserDataException();
     }
   }
 
@@ -66,31 +63,26 @@ export class UserProvider {
       const repository = connection.getRepository(modelClass);
       const user: U = await UserProvider.find<U>(connection, modelClass, id);
       if (user) {
-        const updated = {
+        const toUpdate = {
           username: data.username ? data.username : user.username,
           email: data.email ? data.email : user.email
         };
         if (forceData) {
           for (const index in forceData) {
             if (forceData.hasOwnProperty(index)) {
-              updated[index] = forceData[index];
+              toUpdate[index] = forceData[index];
             }
           }
         }
         const updateResult = await repository.update(
           user.id,
-          (repository.merge(
-            user,
-            updated as DeepPartial<U>
-          ) as unknown) as QueryDeepPartialEntity<U>
+          toUpdate as QueryDeepPartialEntity<U>
         );
-        return await UserProvider.find<U>(connection, modelClass, user.id);
+        const updated: U = await UserProvider.find<U>(connection, modelClass, user.id);
+        return updated;
       }
       throw new UserNotFoundException();
     } catch (e) {
-      if (e.code === 11000) {
-        throw new InvalidUserDataException();
-      }
       throw new InvalidUserDataException();
     }
   }

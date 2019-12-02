@@ -27,7 +27,7 @@ export class ProfileController extends BaseController {
     next: express.NextFunction
   ) {
     try {
-      const element: ProfileModel = await this.service.find(
+      const element: ProfileModel = await this.service.findByUser(
         request.user.id.toString()
       );
       if (element) {
@@ -51,7 +51,7 @@ export class ProfileController extends BaseController {
         request.user
       );
       const profile = await this.service.find(saved.id);
-      return response.status(200).send(saved);
+      return response.status(201).send(saved);
     } catch (e) {
       return this.handleError(e, response);
     }
@@ -81,8 +81,8 @@ export class ProfileController extends BaseController {
     next: express.NextFunction
   ) {
     try {
-      const deleted: boolean = await this.service.remove(
-        request.user.id.toString()
+      const deleted: boolean = await this.service.removeByUserId(
+        request.user.id
       );
       if (deleted) {
         return response.status(204).send();

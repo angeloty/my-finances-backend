@@ -28,7 +28,7 @@ export abstract class EntryController<T extends EntryModel, S extends EntryServi
   }
 
   @Get({ path: ':id', secured: true })
-  public async some(
+  public async get(
     request: RequestWithUser<UserModel>,
     response: express.Response,
     next: express.NextFunction

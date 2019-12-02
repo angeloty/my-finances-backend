@@ -62,6 +62,17 @@ var ProfileService = /** @class */ (function () {
                 }
             });
         }); };
+        this.findByUser = function (id) { return __awaiter(_this, void 0, void 0, function () {
+            var user;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userService.findById(id)];
+                    case 1:
+                        user = _a.sent();
+                        return [2 /*return*/, user.profile];
+                }
+            });
+        }); };
         this.findAll = function () { return __awaiter(_this, void 0, void 0, function () {
             var e_2;
             return __generator(this, function (_a) {
@@ -84,14 +95,17 @@ var ProfileService = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.userService.findById(user.id)];
                     case 1:
                         userModel = _a.sent();
+                        console.log(userModel);
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 4, , 5]);
+                        _a.trys.push([2, 6, , 7]);
                         profile = userModel.profile;
-                        if (!profile) {
-                            profile = new profile_model_1.ProfileModel();
-                            profile.user = userModel;
-                        }
+                        if (!profile) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.update(profile.id, profileData)];
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4:
+                        profile = new profile_model_1.ProfileModel();
+                        profile.user = userModel;
                         if (profileData.birthday) {
                             if (!(profile.birthday instanceof Date)) {
                                 profileData.birthday = new Date(profileData.birthday);
@@ -99,19 +113,50 @@ var ProfileService = /** @class */ (function () {
                         }
                         profile = this.repository.merge(profile, profileData);
                         return [4 /*yield*/, profile.save()];
-                    case 3: return [2 /*return*/, _a.sent()];
-                    case 4:
+                    case 5: return [2 /*return*/, _a.sent()];
+                    case 6:
                         e_3 = _a.sent();
                         if (e_3.code === 9) {
                             return [2 /*return*/, userModel.profile];
                         }
                         throw e_3;
-                    case 5: return [2 /*return*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.update = function (id, profileData) { return __awaiter(_this, void 0, void 0, function () {
+            var profile, updateResult, e_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.repository.findOne(id)];
+                    case 1:
+                        profile = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 5, , 6]);
+                        if (profileData.birthday) {
+                            if (!(profile.birthday instanceof Date)) {
+                                profileData.birthday = new Date(profileData.birthday);
+                            }
+                        }
+                        profile = this.repository.merge(profile, profileData);
+                        return [4 /*yield*/, this.repository.update(id, profileData)];
+                    case 3:
+                        updateResult = _a.sent();
+                        return [4 /*yield*/, this.find(id)];
+                    case 4: return [2 /*return*/, _a.sent()];
+                    case 5:
+                        e_4 = _a.sent();
+                        if (e_4.code === 9) {
+                            return [2 /*return*/, profile];
+                        }
+                        throw e_4;
+                    case 6: return [2 /*return*/];
                 }
             });
         }); };
         this.remove = function (id) { return __awaiter(_this, void 0, void 0, function () {
-            var toUpdate, e_4;
+            var toUpdate, e_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -122,8 +167,8 @@ var ProfileService = /** @class */ (function () {
                         return [4 /*yield*/, this.repository.delete(id)];
                     case 2: return [2 /*return*/, !!(_a.sent())];
                     case 3:
-                        e_4 = _a.sent();
-                        throw e_4;
+                        e_5 = _a.sent();
+                        throw e_5;
                     case 4: return [2 /*return*/];
                 }
             });

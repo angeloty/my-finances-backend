@@ -12,7 +12,7 @@ export class EntryModel extends BaseEntity {
   @Column()
   public note: string;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 13, scale: 2 })
   public amount: number;
 
   @Column()

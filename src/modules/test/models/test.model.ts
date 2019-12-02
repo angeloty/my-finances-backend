@@ -1,9 +1,9 @@
-import { Entity, Column, BaseEntity, ObjectIdColumn, ObjectID } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class TestModel extends BaseEntity {
-  @ObjectIdColumn()
-  public id: ObjectID;
+  @PrimaryGeneratedColumn()
+  public id: number;
 
   @Column()
   public name: string;

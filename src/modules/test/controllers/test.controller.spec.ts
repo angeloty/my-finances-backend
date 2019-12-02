@@ -1,65 +1,71 @@
-import testAppContainer from '../../../test.index';
-import App from '../../../_core/_base/app';
-import supertest = require('supertest');
+import TestSuiteHelper from '../../../_test/helpers/test.helper';
+import { ObjectID } from 'typeorm';
 
-let appContainer: App;
-let request: supertest.SuperTest<supertest.Test>;
-beforeEach(async () => {
-  appContainer = await testAppContainer;
-  request = supertest(appContainer.app);
-});
+describe('Sample tests', () => {
+  const helper = TestSuiteHelper;
+  const suite = 'sample-test';
+  beforeAll(async () => {
+    await helper.initSuite(suite, {
+      auth: true
+    });
+  });
 
-const testModel: { id?: string; name: string; description: string } = {
-  name: 'Testing',
-  description: 'Test description'
-};
+  afterAll(async () => {
+    await helper.endSuite(suite);
+  });
 
-test('Testing insert test', async () => {
-  const response = await request
-    .post('/test/test')
-    .set('Content-Type', 'application/json')
-    .send(testModel)
-    .expect(201);
-  expect(response.body.name).toBe(testModel.name);
-  expect(response.body.description).toBe(testModel.description);
-  testModel.id = response.body.id;
-});
+  const testModel: { id?: string | number | ObjectID; name: string; description: string } = {
+    name: 'Testing',
+    description: 'Test description'
+  };
 
-test('Testing get test', async () => {
-  const response = await request
-    .get('/test/test/' + testModel.id)
-    .send()
-    .expect(200);
-  expect(response.body.name).toBe(testModel.name);
-  expect(response.body.description).toBe(testModel.description);
-});
+  test('Testing insert test', async () => {
+    const response = await helper.request
+      .post('/test/test')
+      .set('Content-Type', 'application/json')
+      .send(testModel)
+      .expect(201);
+    expect(response.body.name).toBe(testModel.name);
+    expect(response.body.description).toBe(testModel.description);
+    testModel.id = response.body.id;
+  });
 
-test('Testing update test', async () => {
-  const newModel = testModel;
-  newModel.name = 'Test Updated';
-  newModel.description = 'Test description updated';
-  const response = await request
-    .put('/test/test/' + testModel.id)
-    .send(newModel)
-    .expect(200);
-  expect(response.body.name).toBe(newModel.name);
-  expect(response.body.description).toBe(newModel.description);
-});
+  test('Testing get test', async () => {
+    const response = await helper.request
+      .get(`/test/test/${testModel.id.toString()}`)
+      .send()
+      .expect(200);
+    expect(response.body.name).toBe(testModel.name);
+    expect(response.body.description).toBe(testModel.description);
+  });
 
-test('Testing get all tests', async () => {
-  const response = await request
-    .get('/test/test')
-    .send()
-    .expect(200);
-});
+  test('Testing update test', async () => {
+    const newModel = testModel;
+    newModel.name = 'Test Updated';
+    newModel.description = 'Test description updated';
+    const response = await helper.request
+      .put(`/test/test/${testModel.id.toString()}`)
+      .send(newModel)
+      .expect(200);
+    expect(response.body.name).toBe(newModel.name);
+    expect(response.body.description).toBe(newModel.description);
+  });
 
-test('Testing delete test', async () => {
-  await request
-    .delete('/test/test/' + testModel.id)
-    .send()
-    .expect(204);
-  await request
-    .put('/test/test/' + testModel.id)
-    .send()
-    .expect(404);
+  test('Testing get all tests', async () => {
+    const response = await helper.request
+      .get('/test/test')
+      .send()
+      .expect(200);
+  });
+
+  test('Testing delete test', async () => {
+    await helper.request
+      .delete(`/test/test/${testModel.id.toString()}`)
+      .send()
+      .expect(204);
+    await helper.request
+      .put(`/test/test/${testModel.id.toString()}`)
+      .send()
+      .expect(404);
+  });
 });

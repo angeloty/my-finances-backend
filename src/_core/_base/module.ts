@@ -27,12 +27,17 @@ export class Module {
     app: App,
     connection: Connection
   ): Promise<express.Application> => {
-    this.app = app;
-    this.path = path;
-    this.app = this.initializeControllers(path, connection, app);
-    this.app = await this.runMigrations(connection, app);
-    console.log(`Module: ${this.constructor.name} ......... Initialized`);
-    return this.app.app;
+    try {
+      this.app = app;
+      this.path = path;
+      this.app = this.initializeControllers(path, connection, app);
+      this.app = await this.runMigrations(connection, app);
+      console.log(`Module: ${this.constructor.name} ......... Initialized`);
+      return this.app.app;
+    } catch (e) {
+      console.log(`Module: ${this.constructor.name} ......... Failed`);
+      throw e;
+    }
   }
 
   public getModels() {
@@ -66,8 +71,9 @@ export class Module {
         await migration.up();
         console.log(`Migration: ${m.name} ......... Loaded`);
       }
+      return this.app;
     }
-    return this.app;
+    return Promise.resolve(this.app);
   }
 }
 

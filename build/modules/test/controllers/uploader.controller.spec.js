@@ -36,35 +36,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var test_index_1 = require("../../../test.index");
-var supertest = require("supertest");
-var appContainer;
-var request;
-beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, test_index_1.default];
-            case 1:
-                appContainer = _a.sent();
-                request = supertest(appContainer.app);
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('Testing upload file', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, request
-                    .post('/uploader/upload')
-                    .set('Content-Type', 'multipart/form-data')
-                    .attach('', __dirname + "/test.files/test.png")
-                    .expect(201)];
-            case 1:
-                response = _a.sent();
-                expect(response.body).not.toBeNull();
-                return [2 /*return*/];
-        }
-    });
-}); });
+var test_helper_1 = require("../../../_test/helpers/test.helper");
+describe('Uploader Sample Tests', function () {
+    var helper = test_helper_1.default;
+    var suite = 'uploader-test';
+    beforeAll(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.initSuite(suite, {
+                        auth: true
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    afterAll(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.endSuite(suite)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('Testing upload file', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, helper.request
+                        .post('/uploader/upload')
+                        .set('Content-Type', 'multipart/form-data')
+                        .attach('', __dirname + "/test.files/test.png")
+                        .expect(201)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body).not.toBeNull();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
 //# sourceMappingURL=uploader.controller.spec.js.map

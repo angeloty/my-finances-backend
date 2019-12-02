@@ -1,19 +1,23 @@
-import testAppContainer from '../../../test.index';
-import App from '../../../_core/_base/app';
-import supertest = require('supertest');
+import TestSuiteHelper from '../../../_test/helpers/test.helper';
+describe('Uploader Sample Tests', () => {
+  const helper = TestSuiteHelper;
+  const suite = 'uploader-test';
+  beforeAll(async () => {
+    await helper.initSuite(suite, {
+      auth: true
+    });
+  });
 
-let appContainer: App;
-let request: supertest.SuperTest<supertest.Test>;
-beforeEach(async () => {
-  appContainer = await testAppContainer;
-  request = supertest(appContainer.app);
-});
+  afterAll(async () => {
+    await helper.endSuite(suite);
+  });
 
-test('Testing upload file', async () => {
-  const response = await request
-    .post('/uploader/upload')
-    .set('Content-Type', 'multipart/form-data')
-    .attach('', `${__dirname}/test.files/test.png`)
-    .expect(201);
-  expect(response.body).not.toBeNull();
+  test('Testing upload file', async () => {
+    const response = await helper.request
+      .post('/uploader/upload')
+      .set('Content-Type', 'multipart/form-data')
+      .attach('', `${__dirname}/test.files/test.png`)
+      .expect(201);
+    expect(response.body).not.toBeNull();
+  });
 });

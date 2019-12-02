@@ -89,10 +89,7 @@ var UserProvider = /** @class */ (function () {
                         return [2 /*return*/, saved];
                     case 3:
                         e_2 = _b.sent();
-                        if (e_2.code === 11000) {
-                            throw new invalidUserData_exception_1.default();
-                        }
-                        throw e_2;
+                        throw new invalidUserData_exception_1.default();
                     case 4: return [2 /*return*/];
                 }
             });
@@ -100,7 +97,7 @@ var UserProvider = /** @class */ (function () {
     };
     UserProvider.update = function (connection, modelClass, id, data, forceData) {
         return __awaiter(this, void 0, void 0, function () {
-            var repository, user, updated, index, updateResult, e_3;
+            var repository, user, toUpdate, index, updateResult, updated, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -110,28 +107,27 @@ var UserProvider = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user) return [3 /*break*/, 4];
-                        updated = {
+                        toUpdate = {
                             username: data.username ? data.username : user.username,
                             email: data.email ? data.email : user.email
                         };
                         if (forceData) {
                             for (index in forceData) {
                                 if (forceData.hasOwnProperty(index)) {
-                                    updated[index] = forceData[index];
+                                    toUpdate[index] = forceData[index];
                                 }
                             }
                         }
-                        return [4 /*yield*/, repository.update(user.id, repository.merge(user, updated))];
+                        return [4 /*yield*/, repository.update(user.id, toUpdate)];
                     case 2:
                         updateResult = _a.sent();
                         return [4 /*yield*/, UserProvider.find(connection, modelClass, user.id)];
-                    case 3: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        updated = _a.sent();
+                        return [2 /*return*/, updated];
                     case 4: throw new userNotFound_exception_1.default();
                     case 5:
                         e_3 = _a.sent();
-                        if (e_3.code === 11000) {
-                            throw new invalidUserData_exception_1.default();
-                        }
                         throw new invalidUserData_exception_1.default();
                     case 6: return [2 /*return*/];
                 }

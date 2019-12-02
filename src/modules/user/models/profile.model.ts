@@ -36,7 +36,7 @@ export class ProfileModel extends BaseEntity {
   })
   public gender: string;
 
-  @Column({ type:'date', nullable: true })
+  @Column({ type: 'date', nullable: true })
   public birthday: Date;
 
   @Column({ nullable: true })
@@ -44,8 +44,33 @@ export class ProfileModel extends BaseEntity {
 
   @OneToOne(
     type => UserModel,
-    user => user.profile,
+    user => user.profile
   )
   @JoinColumn()
   public user: UserModel;
+
+  public toObject() {
+    const user = this.user;
+    if (user && user.profile) {
+      delete user.profile;
+    }
+    return {
+      user,
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      ci: this.ci,
+      gender: this.gender,
+      birthday: this.birthday,
+      photo: this.photo
+    };
+  }
+
+  public toJSON() {
+    return this.toObject();
+  }
+
+  public toJson() {
+    return this.toObject();
+  }
 }

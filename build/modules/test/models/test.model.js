@@ -29,8 +29,8 @@ var TestModel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
-        typeorm_1.ObjectIdColumn(),
-        __metadata("design:type", typeorm_1.ObjectID)
+        typeorm_1.PrimaryGeneratedColumn(),
+        __metadata("design:type", Number)
     ], TestModel.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column(),

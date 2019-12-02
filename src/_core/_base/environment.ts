@@ -2,7 +2,10 @@ import 'reflect-metadata';
 import { applicationContext } from '../application.context';
 import App from './app';
 import Module from './module';
-import { RequestHandlerParams, ParamsDictionary } from 'express-serve-static-core';
+import {
+  RequestHandlerParams,
+  ParamsDictionary
+} from 'express-serve-static-core';
 
 export class Environment<M extends Module> {
   private app: App;
@@ -10,7 +13,7 @@ export class Environment<M extends Module> {
     modules: (new () => M)[];
     middleware?: (() => RequestHandlerParams<ParamsDictionary>)[];
     security?: { userModel: any };
-    environment?: string
+    environment?: string;
   };
 
   constructor(config: any) {
@@ -23,12 +26,15 @@ export class Environment<M extends Module> {
   }
 
   public init = async (): Promise<App> => {
-    this.app = await applicationContext.init({
-      modules: this.config.modules,
-      environment: this.config.environment,
-      middleware: this.config.middleware,
-      security: this.config.security
-    });
-    return this.app;
+    if (!this.app) {
+      this.app = await applicationContext.init({
+        modules: this.config.modules,
+        environment: this.config.environment,
+        middleware: this.config.middleware,
+        security: this.config.security
+      });
+      return this.app;
+    }
+    return Promise.resolve(this.app);
   }
 }
